@@ -11,7 +11,8 @@ namespace Mechxel
 		
 		// Context variables
 		public CommandBuffer commandBuffer { get; private set; }
-
+		public CullingResults cullingResults { get; private set; }
+		
 		private void ExecuteCommandBuffer()
 		{
 			context.ExecuteCommandBuffer(commandBuffer);
@@ -27,10 +28,13 @@ namespace Mechxel
 			{
 				name = $"Render Camera \"{camera.name}\""
 			};
+			cullingResults = default(CullingResults);
 		}
 		
 		public void Render()
 		{
+			if(!Cull()) return;
+			
 			Setup();
 			DrawVisibleGeometry();
 			Submit();
@@ -45,6 +49,16 @@ namespace Mechxel
 			
 			commandBuffer.BeginSample(commandBuffer.name);
 			ExecuteCommandBuffer();
+		}
+		
+		private bool Cull()
+		{
+			if(camera.TryGetCullingParameters(out ScriptableCullingParameters cullParameters))
+			{
+				cullingResults = context.Cull(ref cullParameters);
+				return true;
+			}
+			else return false;
 		}
 		
 		private void DrawVisibleGeometry()
