@@ -1,0 +1,81 @@
+# ===========================
+# Default Collab Ignore Rules
+# ===========================
+
+# OS Generated
+# ============
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+[Tt]humbs.db
+[Dd]esktop.ini
+
+# Visual Studio / MonoDevelop generated
+# =====================================
+[Ee]xported[Oo]bj/
+*.DotSettings
+*.userprefs
+*.csproj
+*.pidb
+*.suo
+*.sln
+*.user
+*.unityproj
+*.booproj
+
+# Unity generated
+# ===============
+[Oo]bj/
+[Bb]uild
+[Ll]ibrary
+[Ll]ogs
+[Tt]emp
+sysinfo.txt
+*.stackdump
+
+# Unity User Settings
+[Uu]ser[Ss]ettings
+
+# VSCode Generated
+# ================
+/.vscode/
+/.vs/
+
+# JetBrains Stuff
+# ===============
+/.idea/
+/[Aa]ssets/[Pp]lugins/
+/Assets/Plugins.meta
+
+# Krita
+# =====
+*.png~
+
+# Blender
+# =======
+*.blend1
+*.blend1.meta
+
+# Custom
+# ======
+/[Bb]uilds/
+/[Aa]ssets/[Pp]roject [Ss]ettings/
+/[Aa]ssets/[Pp]roject [Ss]ettings.meta
+
+# Amplify
+# =======
+/[Aa]ssets/[Aa]mplifyShaderEditor/
+/[Aa]ssets/[Aa]mplifyShaderEditor.meta
+
+# TextMeshPro
+# ===========
+/[Aa]ssets/[Tt]ext[Mm]esh [Pp]ro/
+/[Aa]ssets/[Tt]ext[Mm]esh [Pp]ro.meta
+
+# UWP Signing
+# ===========
+/[Aa]ssets/[Ww][Ss][Aa][Tt]est[Cc]ertificate.pfx
+/[Aa]ssets/[Ww][Ss][Aa][Tt]est[Cc]ertificate.pfx.meta

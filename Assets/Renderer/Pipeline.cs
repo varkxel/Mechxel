@@ -1,0 +1,21 @@
+using UnityEngine;
+using UnityEngine.Rendering;
+
+namespace Mechxel
+{
+	public class Pipeline : RenderPipeline
+	{
+		protected override void Render(ScriptableRenderContext context, Camera[] cameras)
+		{
+			for(int i = 0; i < cameras.Length; i++)
+			{
+				CameraRenderer renderer = new CameraRenderer
+				{
+					context = context,
+					camera = cameras[i]
+				};
+				renderer.Render();
+			}
+		}
+	}
+}
