@@ -9,11 +9,7 @@ namespace Mechxel
 		{
 			for(int i = 0; i < cameras.Length; i++)
 			{
-				CameraRenderer renderer = new CameraRenderer
-				{
-					context = context,
-					camera = cameras[i]
-				};
+				CameraRenderer renderer = new CameraRenderer(context, cameras[i]);
 				renderer.Render();
 			}
 		}
