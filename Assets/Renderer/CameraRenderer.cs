@@ -45,6 +45,9 @@ namespace Mechxel.Renderer
 			// Draw after geometry step to show above transparent materials.
 			DrawUnsupportedShaders();
 			
+			// Draw Gizmos last, on top of everything else
+			DrawGizmos();
+			
 			Submit();
 		}
 		

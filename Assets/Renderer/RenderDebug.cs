@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -5,8 +6,26 @@ namespace Mechxel.Renderer
 {
 	partial struct CameraRenderer
 	{
+		partial void DrawGizmos();
+		
 		partial void DrawUnsupportedShaders();
 		
+		#region Editor
+		#if UNITY_EDITOR
+		
+		partial void DrawGizmos()
+		{
+			if(Handles.ShouldRenderGizmos())
+			{
+				context.DrawGizmos(camera, GizmoSubset.PreImageEffects);
+				context.DrawGizmos(camera, GizmoSubset.PostImageEffects);
+			}
+		}
+		
+		#endif
+		#endregion
+		
+		#region Development
 		#if UNITY_EDITOR || DEVELOPMENT_BUILD
 		
 		private static readonly ShaderTagId[] LegacyTagIDs =
@@ -54,5 +73,6 @@ namespace Mechxel.Renderer
 		}
 		
 		#endif
+		#endregion
 	}
 }
