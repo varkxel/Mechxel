@@ -46,10 +46,12 @@ Shader "Mechxel/Internal/Error"
 			fixed4 Fragment(FragmentInfo info) : SV_Target
 			{
 				const half CrossSize = 0.1;
+				const half CheckerboardSize = 0.125;
 				
 				const fixed4 Colour_BG = fixed4(1, 0, 1, 1);
-				const fixed4 Colour_Cross = fixed4(0, 0, 0.05, 1);
-
+				const fixed4 Colour_Checkerboard = fixed4(0, 0, 0, 1);
+				const fixed4 Colour_Cross = fixed4(0, 1, 1, 1);
+				
 				half2 pos = half2
 				(
 					abs(info.uv.y - 0.5),
@@ -59,8 +61,13 @@ Shader "Mechxel/Internal/Error"
 				bool background =
 					pos.x + (0.5 - pos.y) < (0.5 - CrossSize) ||
 					(0.5 - pos.x) + pos.y < (0.5 - CrossSize);
-				if(background) return Colour_BG;
-				else return Colour_Cross;
+				if(!background) return Colour_Cross;
+
+				bool2 checkerboard = info.uv % CheckerboardSize > (CheckerboardSize * 0.5);
+				bool isCheckerboard = checkerboard.x ^ checkerboard.y;
+				
+				if(isCheckerboard) return Colour_Checkerboard;
+				else return Colour_BG;
 			}
 			
 			ENDHLSL
