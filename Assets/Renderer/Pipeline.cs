@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Mechxel
+namespace Mechxel.Renderer
 {
 	public class Pipeline : RenderPipeline
 	{

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Mechxel
+namespace Mechxel.Renderer
 {
 	[CreateAssetMenu(menuName = "Rendering/Mechxel Render Pipeline")]
 	public class PipelineAsset : RenderPipelineAsset

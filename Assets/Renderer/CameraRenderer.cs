@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Mechxel
+namespace Mechxel.Renderer
 {
 	public struct CameraRenderer
 	{
@@ -10,7 +10,33 @@ namespace Mechxel
 		public Camera camera { get; private set; }
 		
 		// Constants
-		public static readonly ShaderTagId TagID_Unlit = new ShaderTagId("SRPDefaultUnlit");
+		private static readonly ShaderTagId UnlitTagID = new ShaderTagId("SRPDefaultUnlit");
+		private static readonly ShaderTagId[] LegacyTagIDs =
+		{
+			new ShaderTagId("Always"),
+			new ShaderTagId("ForwardBase"),
+			new ShaderTagId("PrepassBase"),
+			new ShaderTagId("Vertex"),
+			new ShaderTagId("VertexLMRGBM"),
+			new ShaderTagId("VertexLM")
+		};
+		
+		// Error material
+		private static Material _errorMaterial = null;
+		private static bool _errorMaterialSet = false;
+		
+		public static Material errorMaterial
+		{
+			get
+			{
+				if(!_errorMaterialSet)
+				{
+					_errorMaterial = new Material(Shader.Find("Mechxel/Internal/Error"));
+					_errorMaterialSet = true;
+				}
+				return _errorMaterial;
+			}
+		}
 		
 		// Context variables
 		public CommandBuffer commandBuffer { get; private set; }
@@ -39,8 +65,23 @@ namespace Mechxel
 			if(!Cull()) return;
 			
 			Setup();
+			
 			DrawVisibleGeometry();
+			
+			// Draw after geometry step to show above transparent materials
+			DrawUnsupportedShaders();
+			
 			Submit();
+		}
+		
+		private bool Cull()
+		{
+			if(camera.TryGetCullingParameters(out ScriptableCullingParameters cullParameters))
+			{
+				cullingResults = context.Cull(ref cullParameters);
+				return true;
+			}
+			else return false;
 		}
 		
 		private void Setup()
@@ -54,16 +95,6 @@ namespace Mechxel
 			ExecuteCommandBuffer();
 		}
 		
-		private bool Cull()
-		{
-			if(camera.TryGetCullingParameters(out ScriptableCullingParameters cullParameters))
-			{
-				cullingResults = context.Cull(ref cullParameters);
-				return true;
-			}
-			else return false;
-		}
-		
 		private void DrawVisibleGeometry()
 		{
 			// Set to draw opaque
@@ -71,7 +102,7 @@ namespace Mechxel
 			{
 				criteria = SortingCriteria.CommonOpaque
 			};
-			DrawingSettings   drawSettings   = new DrawingSettings(TagID_Unlit, sortSettings);
+			DrawingSettings   drawSettings   = new DrawingSettings(UnlitTagID, sortSettings);
 			FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.opaque);
 			
 			// Draw opaque
@@ -84,6 +115,23 @@ namespace Mechxel
 			filterSettings.renderQueueRange = RenderQueueRange.transparent;
 			
 			// Draw transparent
+			context.DrawRenderers(cullingResults, ref drawSettings, ref filterSettings);
+		}
+		
+		private void DrawUnsupportedShaders()
+		{
+			// Set unsupported shaders to the error material
+			DrawingSettings drawSettings = new DrawingSettings(LegacyTagIDs[0], new SortingSettings(camera))
+			{
+				overrideMaterial = errorMaterial
+			};
+			for(int i = 1; i < LegacyTagIDs.Length; i++)
+			{
+				drawSettings.SetShaderPassName(i, LegacyTagIDs[i]);
+			}
+			
+			// Draw error shader
+			FilteringSettings filterSettings = FilteringSettings.defaultValue;
 			context.DrawRenderers(cullingResults, ref drawSettings, ref filterSettings);
 		}
 		
