@@ -9,9 +9,19 @@ namespace Mechxel.Renderer
 		partial void DrawGizmos();
 		
 		partial void DrawUnsupportedShaders();
+
+		partial void PrepareSceneWindow();
 		
 		#region Editor
 		#if UNITY_EDITOR
+
+		partial void PrepareSceneWindow()
+		{
+			if(camera.cameraType == CameraType.SceneView)
+			{
+				ScriptableRenderContext.EmitWorldGeometryForSceneView(camera);
+			}
+		}
 		
 		partial void DrawGizmos()
 		{

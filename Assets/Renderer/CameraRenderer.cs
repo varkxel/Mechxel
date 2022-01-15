@@ -36,6 +36,7 @@ namespace Mechxel.Renderer
 		
 		public void Render()
 		{
+			PrepareSceneWindow();
 			if(!Cull()) return;
 			
 			Setup();
