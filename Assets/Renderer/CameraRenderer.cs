@@ -29,7 +29,7 @@ namespace Mechxel.Renderer
 			
 			commandBuffer = new CommandBuffer
 			{
-				name = $"\"{camera.name}\" Renderer"
+				name = camera.name
 			};
 			cullingResults = default;
 		}
