@@ -25,6 +25,7 @@ ehthumbs.db
 *.user
 *.unityproj
 *.booproj
+/**/.vsconfig
 
 # Unity generated
 # ===============
