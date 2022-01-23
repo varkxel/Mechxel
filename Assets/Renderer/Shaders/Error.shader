@@ -1,8 +1,6 @@
 /*
 	This shader will run whenever there is a shader error.
-	The output is a pink background with a black-blue cross.
-	
-	This probably isn't the fastest it could be, but this shouldn't even be running in a proper build.
+	The output is a black-pink background with a blue cross.
  */
 
 Shader "Mechxel/Internal/Error"
@@ -43,8 +41,30 @@ Shader "Mechxel/Internal/Error"
 				return fragment;
 			}
 			
-			fixed4 Fragment(FragmentInfo info) : SV_Target
+			bool Cross(half2 uv, half crossSize)
 			{
+				half2 pos = half2
+				(
+					abs(uv.y - 0.5),
+					abs(uv.x - 0.5)
+				);
+				
+				bool cross =
+					pos.x + (0.5 - pos.y) < (0.5 - crossSize) ||
+					(0.5 - pos.x) + pos.y < (0.5 - crossSize);
+				return !cross;
+			}
+			
+			bool Border(half2 uv, half borderSize)
+			{
+				half2 mirrorUV = 1.0 - (abs(uv - 0.5) * 2.0);
+				bool2 border = mirrorUV < borderSize;
+				return border.x || border.y;
+			}
+			
+			half4 Fragment(FragmentInfo info) : SV_Target
+			{
+				const half BorderSize = 0.1;
 				const half CrossSize = 0.1;
 				const half CheckerboardSize = 0.125;
 				
@@ -52,17 +72,8 @@ Shader "Mechxel/Internal/Error"
 				const fixed4 Colour_Checkerboard = fixed4(0, 0, 0, 1);
 				const fixed4 Colour_Cross = fixed4(0, 1, 1, 1);
 				
-				half2 pos = half2
-				(
-					abs(info.uv.y - 0.5),
-					abs(info.uv.x - 0.5)
-				);
-
-				bool background =
-					pos.x + (0.5 - pos.y) < (0.5 - CrossSize) ||
-					(0.5 - pos.x) + pos.y < (0.5 - CrossSize);
-				if(!background) return Colour_Cross;
-
+				if(Cross(info.uv, CrossSize) || Border(info.uv, BorderSize)) return Colour_Cross;
+				
 				bool2 checkerboard = info.uv % CheckerboardSize > (CheckerboardSize * 0.5);
 				bool isCheckerboard = checkerboard.x ^ checkerboard.y;
 				
