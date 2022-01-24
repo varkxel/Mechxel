@@ -17,7 +17,7 @@ namespace Mechxel.Renderer
 		
 		partial void DrawUnsupportedShaders();
 		
-		#if UNITY_EDITOR
+		#if UNITY_EDITOR || DEVELOPMENT_BUILD
 		
 		// Cache the string
 		private string sampleName;
@@ -31,6 +31,7 @@ namespace Mechxel.Renderer
 		
 		#else
 		
+		// Just use default name in Player
 		private const string sampleName = commandBufferName;
 		
 		#endif

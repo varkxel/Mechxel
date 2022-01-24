@@ -66,8 +66,17 @@ namespace Mechxel.Renderer
 		{
 			context.SetupCameraProperties(camera);
 			
+			// Camera layers
+			CameraClearFlags flags = camera.clearFlags;
+			
 			// Clear depth & colour
-			commandBuffer.ClearRenderTarget(true, true, Color.clear);
+			commandBuffer.ClearRenderTarget
+			(
+				flags <= CameraClearFlags.Depth,
+				flags == CameraClearFlags.Color,
+				flags == CameraClearFlags.Color ?
+					camera.backgroundColor.linear : Color.clear
+			);
 			
 			commandBuffer.BeginSample(sampleName);
 			ExecuteCommandBuffer();
