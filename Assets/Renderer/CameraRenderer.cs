@@ -3,8 +3,10 @@ using UnityEngine.Rendering;
 
 namespace Mechxel.Renderer
 {
-	public partial struct CameraRenderer
+	public partial class CameraRenderer
 	{
+		private const string commandBufferName = "Render Camera";
+		
 		// Parameters
 		public ScriptableRenderContext context { get; private set; }
 		public Camera camera { get; private set; }
@@ -27,15 +29,13 @@ namespace Mechxel.Renderer
 			this.context = context;
 			this.camera = camera;
 			
-			commandBuffer = new CommandBuffer
-			{
-				name = camera.name
-			};
+			commandBuffer = new CommandBuffer();
 			cullingResults = default;
 		}
 		
 		public void Render()
 		{
+			PrepareBuffer();
 			PrepareSceneWindow();
 			if(!Cull()) return;
 			
@@ -69,7 +69,7 @@ namespace Mechxel.Renderer
 			// Clear depth & colour
 			commandBuffer.ClearRenderTarget(true, true, Color.clear);
 			
-			commandBuffer.BeginSample(commandBuffer.name);
+			commandBuffer.BeginSample(sampleName);
 			ExecuteCommandBuffer();
 		}
 		
@@ -98,7 +98,7 @@ namespace Mechxel.Renderer
 		
 		private void Submit()
 		{
-			commandBuffer.EndSample(commandBuffer.name);
+			commandBuffer.EndSample(sampleName);
 			ExecuteCommandBuffer();
 			context.Submit();
 		}

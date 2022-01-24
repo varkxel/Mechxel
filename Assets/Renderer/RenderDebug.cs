@@ -1,20 +1,43 @@
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEngine.Profiling;
+#endif
 
 namespace Mechxel.Renderer
 {
-	partial struct CameraRenderer
+	partial class CameraRenderer
 	{
+		partial void PrepareBuffer();
+		
+		partial void PrepareSceneWindow();
+		
 		partial void DrawGizmos();
 		
 		partial void DrawUnsupportedShaders();
-
-		partial void PrepareSceneWindow();
+		
+		#if UNITY_EDITOR
+		
+		// Cache the string
+		private string sampleName;
+		
+		partial void PrepareBuffer()
+		{
+			Profiler.BeginSample("Editor Only");
+			commandBuffer.name = sampleName = $"Render Camera \"{camera.name}\"";
+			Profiler.EndSample();
+		}
+		
+		#else
+		
+		private const string sampleName = commandBufferName;
+		
+		#endif
 		
 		#region Editor
 		#if UNITY_EDITOR
-
+		
 		partial void PrepareSceneWindow()
 		{
 			if(camera.cameraType == CameraType.SceneView)
