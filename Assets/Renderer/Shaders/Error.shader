@@ -15,28 +15,24 @@ Shader "Mechxel/Internal/Error"
 			#pragma fragment Fragment
 			#pragma multi_compile _ UNITY_SINGLE_PASS_STEREO STEREO_INSTANCING_ON STEREO_MULTIVIEW_ON
 			
-			#include "UnityCG.cginc"
+			#include "Assets/Renderer/Library/Common.hlsl"
 			
 			struct VertexInfo
 			{
 				float4 vertex : POSITION;
 				half2 uv : TEXCOORD0;
-				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 			
 			struct FragmentInfo
 			{
 				float4 vertex : SV_POSITION;
 				half2 uv : TEXCOORD0;
-				UNITY_VERTEX_OUTPUT_STEREO
 			};
 			
 			FragmentInfo Vertex(VertexInfo info)
 			{
 				FragmentInfo fragment;
-				UNITY_SETUP_INSTANCE_ID(info);
-				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(fragment);
-				fragment.vertex = UnityObjectToClipPos(info.vertex);
+				fragment.vertex = TransformObjectToHClip(info.vertex.xyz);
 				fragment.uv = info.uv;
 				return fragment;
 			}
@@ -68,9 +64,9 @@ Shader "Mechxel/Internal/Error"
 				const half CrossSize = 0.1;
 				const half CheckerboardSize = 0.125;
 				
-				const fixed4 Colour_BG = fixed4(1, 0, 1, 1);
-				const fixed4 Colour_Checkerboard = fixed4(0, 0, 0, 1);
-				const fixed4 Colour_Cross = fixed4(0, 1, 1, 1);
+				const half4 Colour_BG = half4(1, 0, 1, 1);
+				const half4 Colour_Checkerboard = half4(0, 0, 0, 1);
+				const half4 Colour_Cross = half4(0, 1, 1, 1);
 				
 				if(Cross(info.uv, CrossSize) || Border(info.uv, BorderSize)) return Colour_Cross;
 				

@@ -5,17 +5,16 @@ namespace Mechxel.Renderer
 {
 	public partial class CameraRenderer
 	{
-		private const string commandBufferName = "Render Camera";
+		private static readonly ShaderTagId UnlitTagID = new ShaderTagId("SRPDefaultUnlit");
 		
 		// Parameters
 		public ScriptableRenderContext context { get; private set; }
 		public Camera camera { get; private set; }
 		
-		// Constants
-		private static readonly ShaderTagId UnlitTagID = new ShaderTagId("SRPDefaultUnlit");
-		
 		// Context variables
-		public CommandBuffer commandBuffer { get; private set; }
+		private const string commandBufferName = "Render Camera";
+		public CommandBuffer commandBuffer { get; private set; } = new CommandBuffer();
+		
 		public CullingResults cullingResults { get; private set; }
 		
 		private void ExecuteCommandBuffer()
@@ -28,9 +27,6 @@ namespace Mechxel.Renderer
 		{
 			this.context = context;
 			this.camera = camera;
-			
-			commandBuffer = new CommandBuffer();
-			cullingResults = default;
 		}
 		
 		public void Render()
@@ -69,7 +65,7 @@ namespace Mechxel.Renderer
 			// Camera layers
 			CameraClearFlags flags = camera.clearFlags;
 			
-			// Clear depth & colour
+			// Clear depth & colour (dependent on camera flags)
 			commandBuffer.ClearRenderTarget
 			(
 				flags <= CameraClearFlags.Depth,
