@@ -5,6 +5,9 @@ Shader "Mechxel/Unlit"
 		// Texturing
 		_BaseTexture("Texture", 2D) = "white" {}
 		_BaseColour("Colour", Color) = (1.0, 1.0, 1.0, 1.0)
+		
+		// Alpha Clip
+		[Toggle(_CLIPPING)] _Clipping("Alpha Clip", Float) = 0
 		_Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
 		
 		// Transparency
@@ -23,11 +26,17 @@ Shader "Mechxel/Unlit"
 			
 			HLSLPROGRAM
 			
+			// Shader variants
+			#pragma shader_feature _CLIPPING
+			
+			// Instancing support
 			#pragma multi_compile_instancing
 			
+			// Define shader functions
 			#pragma vertex UnlitVertex
 			#pragma fragment UnlitFragment
 			
+			// Include Unlit runtime
 			#include "../Pipeline/Unlit.hlsl"
 			
 			ENDHLSL

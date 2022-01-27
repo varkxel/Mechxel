@@ -37,10 +37,9 @@ namespace Mechxel.Renderer
 			
 			Setup();
 			
-			DrawVisibleGeometry(dynamicBatching, instancing);
-			
-			// Draw after geometry step to show above transparent materials.
+			// Draw geometry
 			DrawUnsupportedShaders();
+			DrawVisibleGeometry(dynamicBatching, instancing);
 			
 			// Draw Gizmos last, on top of everything else
 			DrawGizmos();

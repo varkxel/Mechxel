@@ -56,7 +56,9 @@ float4 UnlitFragment(UnlitFragmentInput input) : SV_TARGET
 	float4 colour = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _BaseColour);
 	float4 output = tex * colour;
 	
-	clip(output.a - UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Cutoff));
+	#ifdef _CLIPPING
+		clip(output.a - UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Cutoff));
+	#endif
 	return output;
 }
 
