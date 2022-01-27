@@ -2,6 +2,8 @@ Shader "Mechxel/Unlit"
 {
 	Properties
 	{
+		// Texturing
+		_BaseTexture("Texture", 2D) = "white" {}
 		_BaseColour("Colour", Color) = (1.0, 1.0, 1.0, 1.0)
 		
 		// Transparency
