@@ -9,6 +9,7 @@ SAMPLER(sampler_BaseTexture);
 UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 	UNITY_DEFINE_INSTANCED_PROP(float4, _BaseTexture_ST)
 	UNITY_DEFINE_INSTANCED_PROP(float4, _BaseColour)
+	UNITY_DEFINE_INSTANCED_PROP(float, _Cutoff)
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
 struct UnlitVertexInput
@@ -50,9 +51,13 @@ UnlitFragmentInput UnlitVertex(UnlitVertexInput input)
 float4 UnlitFragment(UnlitFragmentInput input) : SV_TARGET
 {
 	UNITY_SETUP_INSTANCE_ID(input);
+	
 	float4 tex = SAMPLE_TEXTURE2D(_BaseTexture, sampler_BaseTexture, input.uv);
 	float4 colour = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _BaseColour);
-	return tex * colour;
+	float4 output = tex * colour;
+	
+	clip(output.a - UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Cutoff));
+	return output;
 }
 
 #endif

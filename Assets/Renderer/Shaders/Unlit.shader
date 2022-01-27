@@ -5,10 +5,11 @@ Shader "Mechxel/Unlit"
 		// Texturing
 		_BaseTexture("Texture", 2D) = "white" {}
 		_BaseColour("Colour", Color) = (1.0, 1.0, 1.0, 1.0)
+		_Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
 		
 		// Transparency
 		[Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend("Source Blend Mode", Float) = 1
-		[Enum(UnityEngine.Rendering.BlendMode)] _DstBlend("Destination Blend Mode", Float) = 0
+		[Enum(UnityEngine.Rendering.BlendMode)] _DstBlend("Destination Blend Mode", Float) = 10
 		
 		// Write to Z-Buffer
 		[Enum(Off, 0, On, 1)] _ZWrite("Write to Z-Buffer", Float) = 1
@@ -17,7 +18,7 @@ Shader "Mechxel/Unlit"
 	{
 		Pass
 		{
-			Blend [_SrcBlend] [_DstBlend]
+			Blend  [_SrcBlend] [_DstBlend]
 			ZWrite [_ZWrite]
 			
 			HLSLPROGRAM
