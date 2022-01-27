@@ -9,6 +9,8 @@ Shader "Mechxel/Unlit"
 		Pass
 		{
 			HLSLPROGRAM
+
+			#pragma multi_compile_instancing
 			
 			#pragma vertex UnlitVertex
 			#pragma fragment UnlitFragment

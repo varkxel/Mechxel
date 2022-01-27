@@ -29,7 +29,7 @@ namespace Mechxel.Renderer
 			this.camera = camera;
 		}
 		
-		public void Render()
+		public void Render(bool dynamicBatching, bool instancing)
 		{
 			PrepareBuffer();
 			PrepareSceneWindow();
@@ -37,7 +37,7 @@ namespace Mechxel.Renderer
 			
 			Setup();
 			
-			DrawVisibleGeometry();
+			DrawVisibleGeometry(dynamicBatching, instancing);
 			
 			// Draw after geometry step to show above transparent materials.
 			DrawUnsupportedShaders();
@@ -78,14 +78,18 @@ namespace Mechxel.Renderer
 			ExecuteCommandBuffer();
 		}
 		
-		private void DrawVisibleGeometry()
+		private void DrawVisibleGeometry(bool dynamicBatching, bool instancing)
 		{
 			// Set to draw opaque
 			SortingSettings sortSettings = new SortingSettings(camera)
 			{
 				criteria = SortingCriteria.CommonOpaque
 			};
-			DrawingSettings   drawSettings   = new DrawingSettings(UnlitTagID, sortSettings);
+			DrawingSettings drawSettings = new DrawingSettings(UnlitTagID, sortSettings)
+			{
+				enableDynamicBatching = dynamicBatching,
+				enableInstancing = instancing
+			};
 			FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.opaque);
 			
 			// Draw opaque

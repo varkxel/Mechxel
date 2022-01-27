@@ -5,9 +5,17 @@ namespace Mechxel.Renderer
 {
 	public class Pipeline : RenderPipeline
 	{
-		public Pipeline()
+		private bool useSRPBatcher = true;
+		private bool useInstancing = true;
+		private bool useDynamicBatching = true;
+		
+		public Pipeline(bool useSRPBatcher, bool useInstancing, bool useDynamicBatching)
 		{
-			GraphicsSettings.useScriptableRenderPipelineBatching = true;
+			this.useSRPBatcher = useSRPBatcher;
+			GraphicsSettings.useScriptableRenderPipelineBatching = useSRPBatcher;
+			
+			this.useInstancing = useInstancing;
+			this.useDynamicBatching = useDynamicBatching;
 		}
 		
 		protected override void Render(ScriptableRenderContext context, Camera[] cameras)
@@ -15,7 +23,7 @@ namespace Mechxel.Renderer
 			for(int i = 0; i < cameras.Length; i++)
 			{
 				CameraRenderer renderer = new CameraRenderer(context, cameras[i]);
-				renderer.Render();
+				renderer.Render(useDynamicBatching, useInstancing);
 			}
 		}
 	}
