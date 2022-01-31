@@ -16,6 +16,13 @@ namespace Mechxel.Renderer
 		public CommandBuffer commandBuffer { get; private set; } = new CommandBuffer();
 		
 		public CullingResults cullingResults { get; private set; }
+
+		private static readonly string[] GBuffer_Names =
+		{
+			"albedoSpecular",
+			"positions_WS",
+			"normals_WS"
+		};
 		
 		private void ExecuteCommandBuffer()
 		{
@@ -91,8 +98,12 @@ namespace Mechxel.Renderer
 			};
 			FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.opaque);
 			
-			// Draw opaque
+			// Draw default
 			context.DrawRenderers(cullingResults, ref drawSettings, ref filterSettings);
+			
+			// Draw deferred
+			RenderDeferred(ref drawSettings, ref filterSettings);
+			
 			context.DrawSkybox(camera);
 			
 			// Set to draw transparent
