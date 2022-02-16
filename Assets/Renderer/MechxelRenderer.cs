@@ -23,7 +23,7 @@ namespace Mechxel.Renderer
 		private static readonly RenderTargetIdentifier GBuffer0_RT = new RenderTargetIdentifier(GBuffer0_ID);
 		private static readonly RenderTargetIdentifier GBuffer1_RT = new RenderTargetIdentifier(GBuffer1_ID);
 		private static readonly RenderTargetIdentifier Depth_RT = new RenderTargetIdentifier(Depth_ID);
-
+		
 		private static readonly RenderTargetIdentifier[] GBuffers = new RenderTargetIdentifier[]
 		{
 			GBuffer0_RT,
@@ -127,7 +127,7 @@ namespace Mechxel.Renderer
 				using(CommandBuffer blitBuffer = new CommandBuffer()
 				{
 					#if UNITY_EDITOR || DEVELOPMENT_BUILD
-					name = $"({camera.name}) Blit to RenderTarget0"
+					name = $"({camera.name}) Lighting Step"
 					#endif
 				})
 				{
@@ -139,6 +139,21 @@ namespace Mechxel.Renderer
 					);
 					context.ExecuteCommandBuffer(blitBuffer);
 				}
+
+				using(CommandBuffer cleanupBuffer = new CommandBuffer()
+				{
+					#if UNITY_EDITOR || DEVELOPMENT_BUILD
+					name = $"({camera.name}) Cleanup"
+					#endif
+				})
+				{
+					cleanupBuffer.ReleaseTemporaryRT(GBuffer0_ID);
+					cleanupBuffer.ReleaseTemporaryRT(GBuffer1_ID);
+					cleanupBuffer.ReleaseTemporaryRT(Depth_ID);
+					context.ExecuteCommandBuffer(cleanupBuffer);
+				}
+				
+				context.Submit();
 				
 				EndCameraRendering(context, camera);
 			}

@@ -31,7 +31,7 @@ Shader "Mechxel/DeferredLit"
 			
 			TEXTURE2D(_Albedo);
 			TEXTURE2D(_Normal);
-			//TEXTURE2D(_Mask);
+			TEXTURE2D(_Mask);
 			
 			SAMPLER(sampler_Albedo);
 			SAMPLER(sampler_Normal);
@@ -61,9 +61,9 @@ Shader "Mechxel/DeferredLit"
 			struct Geometry_GBuffers
 			{
 				// |    Diffuse R    |    Diffuse G    | Diffuse B |  Emissive  |
-				float4 GBuffer0;
+				float4 GBuffer0 : SV_Target0;
 				// |     Normal X    |     Normal Y    | Specular  | Smoothness |
-				float4 GBuffer1;
+				float4 GBuffer1 : SV_Target1;
 				
 				// Reserved
 				// | Motion Vector X | Motion Vector Y |    ///    |     ///    |
@@ -93,7 +93,9 @@ Shader "Mechxel/DeferredLit"
 			Geometry_GBuffers Geometry_Fragment(Geometry_FragmentInfo info)
 			{
 				Geometry_GBuffers gbuffers;
-				
+				gbuffers.GBuffer0 = 1;
+				gbuffers.GBuffer1 = 1;
+#if 0
 				float4 albedoMap = SAMPLE_TEXTURE2D(_Albedo, sampler_Albedo, info.uv);
 				float4 normalMap = SAMPLE_TEXTURE2D(_Normal, sampler_Normal, info.uv);
 				
@@ -104,6 +106,7 @@ Shader "Mechxel/DeferredLit"
 				
 				gbuffers.GBuffer0 = float4(albedo, emissive);
 				gbuffers.GBuffer1 = float4(normal, 0, 0);
+#endif
 				
 				return gbuffers;
 			}

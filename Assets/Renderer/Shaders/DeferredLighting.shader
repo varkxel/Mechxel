@@ -28,10 +28,13 @@ Shader "Hidden/Mechxel/DeferredLighting"
 				float4 vertex : SV_POSITION;
 			};
 			
-			CBUFFER_START(UnityPerMaterial);
-				sampler2D GBuffer0;
-				sampler2D GBuffer1;
-			CBUFFER_END;
+			// | Diffuse R | Diffuse G | Diffuse B |  Emissive  |
+			TEXTURE2D(GBuffer0);
+			SAMPLER(GBuffer0_sampler);
+			
+			// | Normal X  | Normal Y |  Specular  | Smoothness |
+			TEXTURE2D(GBuffer1);
+			SAMPLER(GBuffer1_sampler);
 			
 			v2f vert(appdata v)
 			{
@@ -41,9 +44,12 @@ Shader "Hidden/Mechxel/DeferredLighting"
 				return o;
 			}
 			
-			half4 frag(v2f i) : SV_Target
+			float4 frag(v2f i) : SV_Target
 			{
-				return 0;
+				float4 gbuffer0 = SAMPLE_TEXTURE2D(GBuffer0, GBuffer0_sampler, i.uv);
+				float4 gbuffer1 = SAMPLE_TEXTURE2D(GBuffer1, GBuffer1_sampler, i.uv);
+				
+				return float4(gbuffer0.rgb, 1);
 			}
 			ENDHLSL
 		}
