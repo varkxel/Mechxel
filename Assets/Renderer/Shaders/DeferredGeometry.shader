@@ -12,7 +12,7 @@ Shader "Mechxel/DeferredLit"
 		[NoScaleOffset] [Normal]
 		_Normal("Normal", 2D) = "bump" {}
 		
-		// | Specular | Smoothness | /// | /// | 
+		// | Metalllic | Roughness | Emissive | /// | 
 		[NoScaleOffset]
 		_Mask("Mask", 2D) = "white" {}
 	}
@@ -60,9 +60,9 @@ Shader "Mechxel/DeferredLit"
 			
 			struct Geometry_GBuffers
 			{
-				// |    Diffuse R    |    Diffuse G    | Diffuse B |  Emissive  |
+				// | Diffuse R | Diffuse G | Diffuse B | Roughness |
 				float4 GBuffer0 : SV_Target0;
-				// |     Normal X    |     Normal Y    | Specular  | Smoothness |
+				// |  Normal X |  Normal Y | Normal Z  | Metallic  |
 				float4 GBuffer1 : SV_Target1;
 				
 				// Reserved
@@ -96,17 +96,20 @@ Shader "Mechxel/DeferredLit"
 				
 				float4 albedoMap = SAMPLE_TEXTURE2D(_Albedo, sampler_Albedo, info.uv);
 				float4 normalMap = SAMPLE_TEXTURE2D(_Normal, sampler_Normal, info.uv);
+				float4 maskMap   = SAMPLE_TEXTURE2D(_Mask,   sampler_Mask,   info.uv);
 				
 				float3 albedo = albedoMap.rgb;
-				float emissive = albedoMap.a;
+				float3 normal = normalMap.rgb;
 				
-				float2 normal = normalMap.rg;
+				float emissive = maskMap.r;
+				float metallic = maskMap.g;
+				float roughness = maskMap.b;
 				
-				//gbuffers.GBuffer0 = float4(albedo, emissive);
-				//gbuffers.GBuffer1 = float4(normal, 0, 0);
-				gbuffers.GBuffer0 = float4(1, 0, 1, 1);
-				gbuffers.GBuffer1 = float4(1, 0, 1, 1);
-
+				albedo *= emissive;
+				
+				gbuffers.GBuffer0 = float4(albedo, roughness);
+				gbuffers.GBuffer1 = float4(normal, metallic);
+				
 				return gbuffers;
 			}
 			

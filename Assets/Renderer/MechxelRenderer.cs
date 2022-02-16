@@ -70,9 +70,17 @@ namespace Mechxel.Renderer
 				
 				bool drawSkybox = (camera.clearFlags == CameraClearFlags.Skybox);
 				
-				RenderTextureDescriptor colourBuffer = new RenderTextureDescriptor(camera.pixelWidth, camera.pixelHeight)
+				RenderTextureDescriptor GBuffer0_Desc = new RenderTextureDescriptor(camera.pixelWidth, camera.pixelHeight)
 				{
-					graphicsFormat = this.graphicsFormat,
+					graphicsFormat = GraphicsFormat.R16G16B16A16_SFloat,
+					sRGB = QualitySettings.activeColorSpace == ColorSpace.Linear,
+					enableRandomWrite = false,
+					msaaSamples = 1,
+					depthBufferBits = 0
+				};
+				RenderTextureDescriptor GBuffer1_Desc = new RenderTextureDescriptor(camera.pixelWidth, camera.pixelHeight)
+				{
+					graphicsFormat = GraphicsFormat.R8G8B8A8_SRGB,
 					sRGB = QualitySettings.activeColorSpace == ColorSpace.Linear,
 					enableRandomWrite = false,
 					msaaSamples = 1,
@@ -92,8 +100,8 @@ namespace Mechxel.Renderer
 					#endif
 				})
 				{
-					tempRTBuffer.GetTemporaryRT(GBuffer0_ID, colourBuffer, FilterMode.Point);
-					tempRTBuffer.GetTemporaryRT(GBuffer1_ID, colourBuffer, FilterMode.Point);
+					tempRTBuffer.GetTemporaryRT(GBuffer0_ID, GBuffer0_Desc, FilterMode.Point);
+					tempRTBuffer.GetTemporaryRT(GBuffer1_ID, GBuffer1_Desc, FilterMode.Point);
 					tempRTBuffer.GetTemporaryRT(Depth_ID, depthBuffer, FilterMode.Point);
 					context.ExecuteCommandBuffer(tempRTBuffer);
 				}
