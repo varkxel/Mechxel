@@ -27,6 +27,9 @@ float4x4 unity_MatrixVP;
 
 float4x4 unity_MatrixV;
 
+float4x4 unity_MatrixPreviousM;
+float4x4 unity_MatrixPreviousMI;
+
 // The 3D projection matrix.
 float4x4 glstate_matrix_projection;
 
