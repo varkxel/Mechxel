@@ -29,12 +29,10 @@ Shader "Hidden/Mechxel/DeferredLighting"
 			};
 			
 			// | Diffuse R | Diffuse G | Diffuse B |  Emissive  |
-			TEXTURE2D(GBuffer0);
-			SAMPLER(GBuffer0_sampler);
+			sampler2D GBuffer0;
 			
 			// | Normal X  | Normal Y |  Specular  | Smoothness |
-			TEXTURE2D(GBuffer1);
-			SAMPLER(GBuffer1_sampler);
+			sampler2D GBuffer1;
 			
 			v2f vert(appdata v)
 			{
@@ -46,10 +44,10 @@ Shader "Hidden/Mechxel/DeferredLighting"
 			
 			float4 frag(v2f i) : SV_Target
 			{
-				float4 gbuffer0 = SAMPLE_TEXTURE2D(GBuffer0, GBuffer0_sampler, i.uv);
-				float4 gbuffer1 = SAMPLE_TEXTURE2D(GBuffer1, GBuffer1_sampler, i.uv);
+				float4 gbuffer0 = tex2D(GBuffer0, i.uv);
+				float4 gbuffer1 = tex2D(GBuffer1, i.uv);
 				
-				return float4(gbuffer0.rgb, 1);
+				return float4(gbuffer0.rgb, gbuffer1.r);
 			}
 			ENDHLSL
 		}

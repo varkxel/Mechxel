@@ -93,9 +93,7 @@ Shader "Mechxel/DeferredLit"
 			Geometry_GBuffers Geometry_Fragment(Geometry_FragmentInfo info)
 			{
 				Geometry_GBuffers gbuffers;
-				gbuffers.GBuffer0 = 1;
-				gbuffers.GBuffer1 = 1;
-#if 0
+				
 				float4 albedoMap = SAMPLE_TEXTURE2D(_Albedo, sampler_Albedo, info.uv);
 				float4 normalMap = SAMPLE_TEXTURE2D(_Normal, sampler_Normal, info.uv);
 				
@@ -106,7 +104,6 @@ Shader "Mechxel/DeferredLit"
 				
 				gbuffers.GBuffer0 = float4(albedo, emissive);
 				gbuffers.GBuffer1 = float4(normal, 0, 0);
-#endif
 				
 				return gbuffers;
 			}
