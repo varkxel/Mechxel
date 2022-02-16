@@ -1,6 +1,8 @@
 Shader "Hidden/Mechxel/DeferredLighting"
 {
-	Properties {}
+	Properties {
+		_MainTex("_MainTex", 2D) = "white" {}
+	}
 	SubShader
 	{
 		// No culling or depth
@@ -18,7 +20,7 @@ Shader "Hidden/Mechxel/DeferredLighting"
 			
 			struct appdata
 			{
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float2 uv : TEXCOORD0;
 			};
 			

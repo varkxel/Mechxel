@@ -102,9 +102,11 @@ Shader "Mechxel/DeferredLit"
 				
 				float2 normal = normalMap.rg;
 				
-				gbuffers.GBuffer0 = float4(albedo, emissive);
-				gbuffers.GBuffer1 = float4(normal, 0, 0);
-				
+				//gbuffers.GBuffer0 = float4(albedo, emissive);
+				//gbuffers.GBuffer1 = float4(normal, 0, 0);
+				gbuffers.GBuffer0 = float4(1, 0, 1, 1);
+				gbuffers.GBuffer1 = float4(1, 0, 1, 1);
+
 				return gbuffers;
 			}
 			
