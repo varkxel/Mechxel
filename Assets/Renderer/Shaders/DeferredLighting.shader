@@ -49,7 +49,7 @@ Shader "Hidden/Mechxel/DeferredLighting"
 				float4 gbuffer0 = tex2D(GBuffer0, i.uv);
 				float4 gbuffer1 = tex2D(GBuffer1, i.uv);
 				
-				return float4(gbuffer0.rgb, gbuffer1.r);
+				return float4(gbuffer0.rgb, 1);
 			}
 			ENDHLSL
 		}

@@ -10,23 +10,9 @@ namespace Mechxel.Renderer
 	{
 		private const string Name = "Mechxel Renderer";
 		
-		public readonly UnityEvent OnUpdated = new UnityEvent();
-		
-		[SerializeField]
-		private DefaultFormat _graphicsFormat = DefaultFormat.HDR;
-		public DefaultFormat graphicsFormat
-		{
-			get => _graphicsFormat;
-			set
-			{
-				_graphicsFormat = value;
-				OnUpdated.Invoke();
-			}
-		}
-		
 		protected override RenderPipeline CreatePipeline()
 		{
-			return new MechxelRenderer(this);
+			return new MechxelRenderer();
 		}
 	}
 }

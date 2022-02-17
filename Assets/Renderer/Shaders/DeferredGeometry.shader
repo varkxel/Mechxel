@@ -98,7 +98,7 @@ Shader "Mechxel/DeferredLit"
 				float4 normalMap = SAMPLE_TEXTURE2D(_Normal, sampler_Normal, info.uv);
 				float4 maskMap   = SAMPLE_TEXTURE2D(_Mask,   sampler_Mask,   info.uv);
 				
-				float3 albedo = albedoMap.rgb;
+				float3 albedo = albedoMap.rgb * _Colour;
 				float3 normal = normalMap.rgb;
 				
 				float emissive = maskMap.r;
