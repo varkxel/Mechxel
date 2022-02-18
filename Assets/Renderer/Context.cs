@@ -25,12 +25,12 @@ namespace Mechxel.Renderer
 		internal void BufferInit()
 		{
 			#if UNITY_EDITOR || DEVELOPMENT_BUILD
-			
 			Profiler.BeginSample("Editor Only");
+			
 			cameraName = camera.name;
 			buffer.name = $"Render {cameraName}";
-			Profiler.EndSample();
 			
+			Profiler.EndSample();
 			#endif
 		}
 		

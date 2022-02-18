@@ -1,6 +1,6 @@
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
+using UnityEngine.Experimental.Rendering;
 using static Mechxel.Renderer.Context;
 
 namespace Mechxel.Renderer
@@ -92,10 +92,6 @@ namespace Mechxel.Renderer
 				buffer.GetTemporaryRT(Depth_ID, Depth_Desc, FilterMode.Point);
 			context.EndBuffer();
 			
-			SortingSettings sortSettings = new SortingSettings(context.camera);
-			DrawingSettings drawSettings = new DrawingSettings(LightingPassTag, sortSettings);
-			FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.all);
-			
 			context.StartBuffer("Bind RenderTargets");
 				buffer.SetRenderTarget(GBuffers, Depth_RT);
 				buffer.ClearRenderTarget(true, true, Color.black);
@@ -103,16 +99,13 @@ namespace Mechxel.Renderer
 			
 			//if(drawSkybox) context.DrawSkybox(camera);
 			
-			// Opaque
-			sortSettings.criteria = SortingCriteria.CommonOpaque;
-			drawSettings.sortingSettings = sortSettings;
-			filterSettings.renderQueueRange = RenderQueueRange.opaque;
-			context.SRPContext.DrawRenderers(context.culling, ref drawSettings, ref filterSettings);
-			
-			// Transparent
-			sortSettings.criteria = SortingCriteria.CommonTransparent;
-			drawSettings.sortingSettings = sortSettings;
-			filterSettings.renderQueueRange = RenderQueueRange.transparent;
+			// Render
+			SortingSettings sortSettings = new SortingSettings(context.camera)
+			{
+				criteria = SortingCriteria.CommonOpaque
+			};
+			DrawingSettings drawSettings = new DrawingSettings(LightingPassTag, sortSettings);
+			FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.opaque);
 			context.SRPContext.DrawRenderers(context.culling, ref drawSettings, ref filterSettings);
 			
 			// Screen Space Combine Step

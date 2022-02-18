@@ -1,20 +1,27 @@
 using UnityEngine;
+using UnityEngine.Profiling;
 using UnityEngine.Rendering;
 
 namespace Mechxel.Renderer
 {
 	public class Pipeline : RenderPipeline
 	{
+		public PipelineSettings settings;
+		
 		internal Context context;
 		
-		public Pipeline()
+		public Pipeline(PipelineSettings settings)
 		{
+			this.settings = settings;
+			
 			Deferred.Initialise();
 			UnsupportedShaderRenderer.Initialise();
 		}
 		
 		protected override void Render(ScriptableRenderContext _SRPContext, Camera[] cameras)
 		{
+			Profiler.BeginSample("Mechxel Render Pipeline");
+			
 			context = new Context { SRPContext = _SRPContext };
 			
 			// Render each camera
@@ -34,6 +41,8 @@ namespace Mechxel.Renderer
 				UnsupportedShaderRenderer.DrawUnsupportedShaders(ref context);
 				Deferred.RenderDeferred(ref context);
 			}
+			
+			Profiler.EndSample();
 		}
 	}
 }

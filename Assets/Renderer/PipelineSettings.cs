@@ -1,7 +1,5 @@
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.Rendering;
-using UnityEngine.Experimental.Rendering;
 
 namespace Mechxel.Renderer
 {
@@ -17,7 +15,7 @@ namespace Mechxel.Renderer
 		
 		protected override RenderPipeline CreatePipeline()
 		{
-			return new Pipeline();
+			return new Pipeline(this);
 		}
 	}
 }
