@@ -12,3 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44da8f2ed1c74accb867935254c1f2ee, type: 3}
   m_Name: Mechxel Renderer
   m_EditorClassIdentifier: 
+  useSRPBatcher: 1
+  useInstancing: 0
+  useDynamicBatching: 0

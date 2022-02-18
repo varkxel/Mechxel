@@ -66,7 +66,7 @@ Shader "Mechxel/DeferredLit"
 				float4 GBuffer1 : SV_Target1;
 				
 				// Reserved
-				// | Motion Vector X | Motion Vector Y |    ///    |     ///    |
+				// | Motion Vector X | Motion Vector Y | /// | /// |
 				// float4 GBuffer2;
 			};
 			
@@ -74,7 +74,7 @@ Shader "Mechxel/DeferredLit"
 			{
 				Geometry_FragmentInfo output;
 				
-				float3 position_WS = TransformObjectToWorld(info.normal_OS);
+				float3 position_WS = TransformObjectToWorld(info.position_OS);
 				float4 position_HCS = TransformWorldToHClip(position_WS);
 				
 				output.position_WS = position_WS;
@@ -101,11 +101,8 @@ Shader "Mechxel/DeferredLit"
 				float3 albedo = albedoMap.rgb * _Colour;
 				float3 normal = normalMap.rgb;
 				
-				float emissive = maskMap.r;
 				float metallic = maskMap.g;
 				float roughness = maskMap.b;
-				
-				albedo *= emissive;
 				
 				gbuffers.GBuffer0 = float4(albedo, roughness);
 				gbuffers.GBuffer1 = float4(normal, metallic);

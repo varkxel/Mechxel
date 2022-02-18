@@ -6,13 +6,18 @@ using UnityEngine.Experimental.Rendering;
 namespace Mechxel.Renderer
 {
 	[CreateAssetMenu(menuName = "Mechxel/Renderer Asset", fileName = Name)]
-	public class MechxelRendererSettings : RenderPipelineAsset
+	public class PipelineSettings : RenderPipelineAsset
 	{
 		private const string Name = "Mechxel Renderer";
 		
+		[Header("Draw Call Management")]
+		public bool useSRPBatcher = true;
+		public bool useInstancing = false;
+		public bool useDynamicBatching = false;
+		
 		protected override RenderPipeline CreatePipeline()
 		{
-			return new MechxelRenderer();
+			return new Pipeline();
 		}
 	}
 }

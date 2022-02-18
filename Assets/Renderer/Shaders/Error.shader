@@ -33,7 +33,10 @@ Shader "Hidden/Mechxel/Error"
 			FragmentInfo Vertex(VertexInfo info)
 			{
 				FragmentInfo fragment;
-				fragment.vertex = TransformObjectToHClip(info.vertex.xyz);
+
+				float3 position_WS = TransformObjectToWorld(info.vertex);
+				
+				fragment.vertex = TransformWorldToHClip(position_WS);
 				fragment.uv = info.uv;
 				return fragment;
 			}

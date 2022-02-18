@@ -1,8 +1,6 @@
 Shader "Hidden/Mechxel/DeferredLighting"
 {
-	Properties {
-		_MainTex("_MainTex", 2D) = "white" {}
-	}
+	Properties {}
 	SubShader
 	{
 		// No culling or depth
@@ -30,10 +28,10 @@ Shader "Hidden/Mechxel/DeferredLighting"
 				float4 vertex : SV_POSITION;
 			};
 			
-			// | Diffuse R | Diffuse G | Diffuse B |  Emissive  |
+			// | Diffuse R | Diffuse G | Diffuse B | Roughness |
 			sampler2D GBuffer0;
 			
-			// | Normal X  | Normal Y |  Specular  | Smoothness |
+			// |  Normal X |  Normal Y | Normal Z  | Metallic  |
 			sampler2D GBuffer1;
 			
 			v2f vert(appdata v)
