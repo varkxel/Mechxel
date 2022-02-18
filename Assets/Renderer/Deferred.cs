@@ -77,6 +77,12 @@ namespace Mechxel.Renderer
 				msaaSamples = 1
 			};
 		
+		public delegate void SkyboxDelegate(ref Context context);
+		public static SkyboxDelegate OnDrawSkybox = (ref Context context) =>
+		{
+			context.SRPContext.DrawSkybox(context.camera);
+		};
+		
 		internal static void RenderDeferred(ref Context context)
 		{
 			int width = context.camera.pixelWidth;
@@ -97,7 +103,8 @@ namespace Mechxel.Renderer
 				buffer.ClearRenderTarget(true, true, Color.black);
 			context.EndBuffer();
 			
-			//if(drawSkybox) context.DrawSkybox(camera);
+			// Draw skybox
+			OnDrawSkybox.Invoke(ref context);
 			
 			// Render
 			SortingSettings sortSettings = new SortingSettings(context.camera)

@@ -4,10 +4,10 @@ using UnityEngine.Rendering;
 
 namespace Mechxel.Renderer
 {
-	internal struct Context
+	public struct Context
 	{
-		internal ScriptableRenderContext SRPContext;
-		internal Camera camera;
+		public ScriptableRenderContext SRPContext;
+		public Camera camera;
 		
 		internal CullingResults culling;
 		
