@@ -38,8 +38,10 @@ namespace Mechxel.Renderer
 				// Initialise camera
 				context.CameraInit();
 				
+				Deferred.Render(ref context);
+				Deferred.Finalise(ref context);
+				
 				UnsupportedShaderRenderer.DrawUnsupportedShaders(ref context);
-				Deferred.RenderDeferred(ref context);
 			}
 			
 			Profiler.EndSample();

@@ -44,6 +44,7 @@ namespace Mechxel.Renderer
 			// Draw the error shader on the unsupported objects.
 			FilteringSettings filterSettings = FilteringSettings.defaultValue;
 			context.SRPContext.DrawRenderers(context.culling, ref drawSettings, ref filterSettings);
+			context.SRPContext.Submit();
 		}
 		
 		#endif

@@ -83,7 +83,7 @@ namespace Mechxel.Renderer
 			context.SRPContext.DrawSkybox(context.camera);
 		};
 		
-		internal static void RenderDeferred(ref Context context)
+		internal static void Render(ref Context context)
 		{
 			int width = context.camera.pixelWidth;
 			int height = context.camera.pixelHeight;
@@ -115,7 +115,11 @@ namespace Mechxel.Renderer
 			FilteringSettings filterSettings = new FilteringSettings(RenderQueueRange.opaque);
 			context.SRPContext.DrawRenderers(context.culling, ref drawSettings, ref filterSettings);
 			
-			// Screen Space Combine Step
+			context.SRPContext.Submit();
+		}
+		
+		internal static void Finalise(ref Context context)
+		{
 			context.StartBuffer("Lighting Blit");
 				buffer.Blit
 				(

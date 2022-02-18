@@ -10,6 +10,9 @@ Shader "Hidden/Mechxel/Error"
 	{
 		Pass
 		{
+			ZClip False
+			ZWrite Off
+			
 			HLSLPROGRAM
 			
 			#pragma vertex Vertex
