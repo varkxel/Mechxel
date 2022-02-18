@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Mechxel.Renderer
+namespace Mechxel.Renderer.Development
 {
 	internal static class UnsupportedShaderRenderer
 	{

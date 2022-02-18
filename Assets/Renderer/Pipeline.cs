@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
+using Mechxel.Renderer.Development;
 
 namespace Mechxel.Renderer
 {
@@ -42,6 +43,8 @@ namespace Mechxel.Renderer
 				Deferred.Finalise(ref context);
 				
 				UnsupportedShaderRenderer.DrawUnsupportedShaders(ref context);
+				
+				GizmoRenderer.DrawGizmos(ref context);
 			}
 			
 			Profiler.EndSample();
