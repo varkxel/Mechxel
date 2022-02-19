@@ -2,7 +2,6 @@ Shader "Mechxel/DeferredLit"
 {
 	Properties
 	{
-		// RGB = Albedo, A = Emissivity
 		[MainTexture]
 		_Albedo("Albedo", 2D) = "white" {}
 		
