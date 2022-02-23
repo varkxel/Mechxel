@@ -8,10 +8,7 @@ using static Mechxel.Noise.Permutation;
 
 namespace Mechxel.Noise
 {
-	[BurstCompile(
-		FloatPrecision.Standard, FloatMode.Fast,
-		OptimizeFor = OptimizeFor.Performance
-	)]
+	[BurstCompile(FloatPrecision.Standard, FloatMode.Fast)]
 	public struct Simplex3D : IJobParallelFor
 	{
 		[ReadOnly]  public double3 origin;
@@ -68,10 +65,7 @@ namespace Mechxel.Noise
 		 * Based on this:
 		 * https://github.com/ashima/webgl-noise/blob/master/src/noise3D.glsl
 		 */
-		[BurstCompile(
-			FloatPrecision.Standard, FloatMode.Fast,
-			OptimizeFor = OptimizeFor.Performance
-		)]
+		[BurstCompile(FloatPrecision.Standard, FloatMode.Fast)]
 		public static double Sample(in double3 position)
 		{
 			const double C_x = 1.0 / 6.0;

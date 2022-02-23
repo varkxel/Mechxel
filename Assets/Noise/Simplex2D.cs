@@ -8,10 +8,7 @@ using static Mechxel.Noise.Permutation;
 
 namespace Mechxel.Noise
 {
-	[BurstCompile(
-		FloatPrecision.Standard, FloatMode.Fast,
-		OptimizeFor = OptimizeFor.Performance
-	)]
+	[BurstCompile(FloatPrecision.Standard, FloatMode.Fast)]
 	public struct Simplex2D : IJobParallelFor
 	{
 		[ReadOnly]  public double4 bounds;
