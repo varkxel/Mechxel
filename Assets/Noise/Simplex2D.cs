@@ -12,10 +12,17 @@ namespace Mechxel.Noise
 	public struct Simplex2D : IJobParallelFor
 	{
 		[ReadOnly]  public double4 bounds;
-		[ReadOnly]  public double scale;
 		
 		[WriteOnly] public NativeArray<double> map;
 		[ReadOnly]  public int2 dimensions;
+		
+		[ReadOnly]  public double noiseScale;
+		
+		[ReadOnly]  public int octaves;
+		[ReadOnly]  public double amplitudeModifier;
+		[ReadOnly]  public double scaleModifier;
+		
+		[ReadOnly]  public NativeArray<double2> offsets;
 		
 		[BurstCompile(FloatPrecision.Standard, FloatMode.Fast)]
 		public static int Size
@@ -50,24 +57,62 @@ namespace Mechxel.Noise
 			);
 		}
 		
-		public static Simplex2D Construct(in double2 origin, in double2 size, double scale)
+		public static Simplex2D Construct
+		(
+			ref Random random,
+			
+			in double2 origin, in double2 size, double samples,
+			double scale,
+			int octaves, double amplitudeModifier, double scaleModifier
+		)
 		{
-			int arraySize = Size(origin, size, scale, out int2 dimensions, out double4 bounds);
+			return Construct
+			(
+				ref random, new double2(-double.MinValue, -double.MaxValue),
+				origin, size, samples,
+				scale,
+				octaves, amplitudeModifier, scaleModifier
+			);
+		}
+		
+		public static Simplex2D Construct
+		(
+			ref Random random, in double2 randomBounds,
+			
+			in double2 origin, in double2 size, double samples,
+			double scale,
+			int octaves, double amplitudeModifier, double scaleModifier
+		)
+		{
+			int arraySize = Size(origin, size, samples, out int2 dimensions, out double4 bounds);
 			Simplex2D instance = new Simplex2D
 			{
 				bounds = bounds,
-				scale = scale,
 				
 				dimensions = dimensions,
-				map = new NativeArray<double>(arraySize, Allocator.TempJob)
+				map = new NativeArray<double>(arraySize, Allocator.TempJob),
+				
+				noiseScale = scale,
+				
+				octaves = octaves,
+				amplitudeModifier = amplitudeModifier,
+				scaleModifier = scaleModifier,
+				
+				offsets = new NativeArray<double2>(octaves, Allocator.TempJob)
 			};
+			
+			for(int i = 0; i < octaves; i++)
+			{
+				instance.offsets[i] = random.NextDouble2(randomBounds.xx, randomBounds.yy);
+			}
+			
 			return instance;
 		}
 		
-		[BurstCompile(
-			FloatPrecision.Standard, FloatMode.Fast,
-			OptimizeFor = OptimizeFor.Performance
-		)]
+		/*
+		 * Based on this: https://github.com/ashima/webgl-noise/blob/master/src/noise2D.glsl
+		 */
+		[BurstCompile(FloatPrecision.Standard, FloatMode.Fast)]
 		public static double Sample(in double2 position)
 		{
 			double C_x = (3.0 - sqrt(3.0)) / 6.0;
@@ -82,8 +127,14 @@ namespace Mechxel.Noise
 			double2 x0 = position - dot(i, C.xx);
 			
 			// Other corners
-			double2 i1 = (x0.x > x0.y) ? double2(1.0, 0.0) : double2(0.0, 1.0);
-
+			/*
+			 * Branch-less implementation from:
+			 * https://www.arxiv-vanity.com/papers/1204.1461/
+			 */
+			double2 i1 = double2(0.0, 0.0);
+			i1.x = step(x0.y, x0.x);
+			i1.y = 1.0 - i1.x;
+			
 			double4 x12 = x0.xyxy + C.xxzz;
 			x12.xy -= i1;
 			
@@ -124,7 +175,25 @@ namespace Mechxel.Noise
 		{
 			Index2D(dimensions, index, out int2 sample);
 			double2 position = lerp(bounds.xy, bounds.zw, (double2) sample / (double2) (dimensions - 1));
-			map[index] = Sample(position);
+			
+			double value = 0.0f;
+			double amplitude = 1.0f;
+			double scale = noiseScale;
+			
+			for(int octave = 0; octave < octaves; octave++)
+			{
+				double2 samplePosition = position;
+				samplePosition += offsets[octave];
+				samplePosition *= scale;
+				
+				// value += Sample(samplePosition) * amplitude
+				value = mad(Sample(samplePosition), amplitude, value);
+				
+				amplitude *= amplitudeModifier;
+				scale *= scaleModifier;
+			}
+			
+			map[index] = value;
 		}
 	}
 }

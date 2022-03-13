@@ -4,6 +4,7 @@ using static Unity.Mathematics.math;
 
 namespace Mechxel.Noise
 {
+	[BurstCompile]
 	internal static class Permutation
 	{
 		[BurstCompile(FloatPrecision.Standard, FloatMode.Fast)]

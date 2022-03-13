@@ -13,7 +13,6 @@ namespace Mechxel.Noise
 	{
 		[ReadOnly]  public double3 origin;
 		[ReadOnly]  public double3 size;
-		[ReadOnly]  public double scale;
 		
 		[WriteOnly] public NativeArray<double> map;
 		[ReadOnly]  public int3 dimensions;
@@ -35,6 +34,11 @@ namespace Mechxel.Noise
 			return total;
 		}
 		
+		/*
+		 * Whilst this method is scalar,
+		 * Burst compiling it makes sense because of its use in vectorized loops,
+		 * meaning it will be vectorized in other methods.
+		 */
 		[BurstCompile]
 		public static void Index3D(in int3 dimensions, int index, out int3 position)
 		{
@@ -53,7 +57,6 @@ namespace Mechxel.Noise
 			{
 				origin = origin,
 				size = size,
-				scale = scale,
 				
 				dimensions = dimensions,
 				map = new NativeArray<double>(arraySize, Allocator.TempJob)
