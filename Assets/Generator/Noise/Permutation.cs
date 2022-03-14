@@ -2,7 +2,7 @@ using Unity.Burst;
 using Unity.Mathematics;
 using static Unity.Mathematics.math;
 
-namespace Mechxel.Noise
+namespace Mechxel.Generator.Noise
 {
 	[BurstCompile]
 	internal static class Permutation

@@ -4,9 +4,9 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using static Unity.Mathematics.math;
 
-using static Mechxel.Noise.Permutation;
+using static Mechxel.Generator.Noise.Permutation;
 
-namespace Mechxel.Noise
+namespace Mechxel.Generator.Noise
 {
 	[BurstCompile(FloatPrecision.Standard, FloatMode.Fast)]
 	public struct Simplex3D : IJobParallelFor
