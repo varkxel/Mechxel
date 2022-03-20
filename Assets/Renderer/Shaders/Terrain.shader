@@ -2,11 +2,8 @@ Shader "Mechxel/Terrain"
 {
 	Properties
 	{
-		[MainTexture] [Normal]
+		[MainTexture] [NoScaleOffset]
 		_ID("ID Map", 2D) = "white" {}
-		
-		[NoScaleOffset] [Normal]
-		_Normal("Normal Map", 2D) = "bump" {}
 	}
 	SubShader
 	{
@@ -16,9 +13,13 @@ Shader "Mechxel/Terrain"
 			
 			HLSLPROGRAM
 			
-			// TODO Use FP16, once Unity gets off their arses and implements DX12/VK properly.
-			//#pragma use_dxc
-			//#pragma target 6.2
+			/*
+				TODO
+				Use 16bit integer/floating point types,
+				once Unity finally gets off their arses and implements DX12/VK properly.
+			*/
+//			#pragma use_dxc
+//			#pragma target 6.2
 			
 			#pragma vertex Vertex
 			#pragma fragment Fragment
@@ -26,10 +27,7 @@ Shader "Mechxel/Terrain"
 			#include "Common.hlsl"
 			
 			TEXTURE2D(_ID);
-			TEXTURE2D(_Normal);
-			
 			SAMPLER(sampler_ID);
-			SAMPLER(sampler_Normal);
 			
 			struct VertexInfo
 			{
@@ -49,7 +47,7 @@ Shader "Mechxel/Terrain"
 			struct GBuffers
 			{
 				// |    ID    | Normal X | Normal Y | Normal Z |
-				half4 GBuffer0 : SV_Target0;
+				min16uint4 GBuffer0 : SV_Target0;
 			};
 			
 			FragmentInfo Vertex(VertexInfo info)
@@ -75,11 +73,11 @@ Shader "Mechxel/Terrain"
 				GBuffers buffers;
 				
 				uint id = SAMPLE_TEXTURE2D(_ID, sampler_ID, info.uv).x;
-				half idInt = asfloat(id);
-				half3 normal = SAMPLE_TEXTURE2D(_Normal, sampler_Normal, info.uv);
+				half3 normal = info.normal_WS;
+				uint3 normalInt = asuint(normal);
 				
 				// Pack ID & Normals into GBuffer0
-				buffers.GBuffer0 = half4(idInt, normal);
+				buffers.GBuffer0 = min16uint4(id, normalInt);
 				
 				return buffers;
 			}
