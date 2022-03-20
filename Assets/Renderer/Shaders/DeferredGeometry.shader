@@ -11,7 +11,7 @@ Shader "Mechxel/DeferredLit"
 		[NoScaleOffset] [Normal]
 		_Normal("Normal", 2D) = "bump" {}
 		
-		// | Metalllic | Roughness | Emissive | /// | 
+		// | Metallic | Roughness | Emissive | /// | 
 		[NoScaleOffset]
 		_Mask("Mask", 2D) = "white" {}
 	}

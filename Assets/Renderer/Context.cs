@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
+using Unity.Mathematics;
 
 namespace Mechxel.Renderer
 {
@@ -10,6 +11,28 @@ namespace Mechxel.Renderer
 		public Camera camera;
 		
 		internal CullingResults culling;
+		
+		public int2 renderSize;
+		
+		#region Depth Buffer
+		
+		public const string DepthBuffer_Name = "DepthBuffer";
+		public static readonly int DepthBuffer_ID = Shader.PropertyToID(DepthBuffer_Name);
+		public static readonly RenderTargetIdentifier DepthBuffer_RT = new RenderTargetIdentifier(DepthBuffer_Name);
+		
+		public const DepthFormat DepthBufferFormat = DepthFormat.Bits32;
+		
+		internal static RenderTextureDescriptor DepthDescriptor(in int2 size) =>
+			new RenderTextureDescriptor(size.x, size.y)
+			{
+				colorFormat = RenderTextureFormat.Depth,
+				depthBufferBits = DepthBufferFormat.Bits(),
+				
+				enableRandomWrite = false,
+				msaaSamples = 1
+			};
+		
+		#endregion
 		
 		public static CommandBuffer buffer { get; private set; } = new CommandBuffer()
 		{
