@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
@@ -14,12 +15,17 @@ namespace Mechxel.Renderer
 		
 		internal Context context;
 		
+		protected List<RenderPass> renderPasses = new List<RenderPass>(new RenderPass[]
+		{
+			new TerrainRenderer()
+		});
+		
 		public Pipeline(PipelineSettings settings)
 		{
 			this.settings = settings;
 			
-			Deferred.Initialise();
 			UnsupportedShaderRenderer.Initialise();
+			for(int i = 0; i < renderPasses.Count; i++) renderPasses[i].Initialise();
 		}
 		
 		protected override void Render(ScriptableRenderContext _SRPContext, Camera[] cameras)
@@ -29,9 +35,9 @@ namespace Mechxel.Renderer
 			context = new Context { SRPContext = _SRPContext };
 			
 			// Render each camera
-			for(int i = 0; i < cameras.Length; i++)
+			for(int cameraIndex = 0; cameraIndex < cameras.Length; cameraIndex++)
 			{
-				context.camera = cameras[i];
+				context.camera = cameras[cameraIndex];
 				
 				// Initialise Command Buffer
 				context.BufferInit();
@@ -50,26 +56,26 @@ namespace Mechxel.Renderer
 				);
 				
 				// Initialise depth buffer
-				RenderTextureDescriptor DepthBuffer_Desc = DepthDescriptor(context.renderSize);
+				RenderTextureDescriptor DepthBuffer_Desc = DepthBuffer.Descriptor(context.renderSize);
 				context.StartBuffer("Setup Depth Buffer");
-					buffer.GetTemporaryRT(DepthBuffer_ID, DepthBuffer_Desc, FilterMode.Point);
+					buffer.GetTemporaryRT(DepthBuffer.ID, DepthBuffer_Desc, FilterMode.Point);
+					buffer.SetRenderTarget(DepthBuffer.RT);
+					buffer.ClearRenderTarget(true, false, Color.black);
 				context.EndBuffer();
 				context.SRPContext.Submit();
-				
-				// Deferred rendering
-				Deferred.Render(ref context);
-				Deferred.Finalise(ref context);
-				
-				// Terrain rendering
-				
 				
 				// Debug/Editor rendering
 				UnsupportedShaderRenderer.DrawUnsupportedShaders(ref context);
 				GizmoRenderer.DrawGizmos(ref context);
 				
+				//context.SRPContext.DrawSkybox(context.camera);
+				
+				// Render the passes
+				for(int i = 0; i < renderPasses.Count; i++) renderPasses[i].Render(ref context);
+				
 				// Destroy depth buffer
 				context.StartBuffer("Destroy Depth Buffer");
-					buffer.ReleaseTemporaryRT(DepthBuffer_ID);
+					buffer.ReleaseTemporaryRT(DepthBuffer.ID);
 				context.EndBuffer();
 				context.SRPContext.Submit();
 			}

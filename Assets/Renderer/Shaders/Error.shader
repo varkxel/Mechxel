@@ -23,7 +23,7 @@ Shader "Hidden/Mechxel/Error"
 			
 			struct VertexInfo
 			{
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				half2 uv : TEXCOORD0;
 			};
 			

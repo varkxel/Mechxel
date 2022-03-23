@@ -40,14 +40,13 @@ Shader "Mechxel/Terrain"
 			{
 				float4 position_HCS : SV_POSITION;
 				
-				float2 uv        : VAR_BASE_UV;
 				float3 normal_WS : VAR_NORMAL;
+				float2 uv        : VAR_BASE_UV;
 			};
 			
 			struct GBuffers
 			{
-				// |    ID    | Normal X | Normal Y | Normal Z |
-				min16uint4 GBuffer0 : SV_Target0;
+				half4 GBuffer0 : SV_Target0;
 			};
 			
 			FragmentInfo Vertex(VertexInfo info)
@@ -72,12 +71,14 @@ Shader "Mechxel/Terrain"
 			{
 				GBuffers buffers;
 				
-				uint id = SAMPLE_TEXTURE2D(_ID, sampler_ID, info.uv).x;
+				//uint id = SAMPLE_TEXTURE2D(_ID, sampler_ID, info.uv).x;
+				uint id = 2048;
 				half3 normal = info.normal_WS;
-				uint3 normalInt = asuint(normal);
 				
-				// Pack ID & Normals into GBuffer0
-				buffers.GBuffer0 = min16uint4(id, normalInt);
+				// Cast uint to float
+				float idFloat = id;
+				
+				buffers.GBuffer0 = half4(idFloat, normal);
 				
 				return buffers;
 			}

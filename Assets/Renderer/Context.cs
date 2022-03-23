@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
 using Unity.Mathematics;
+using UnityEngine.Experimental.Rendering;
 
 namespace Mechxel.Renderer
 {
@@ -14,25 +15,11 @@ namespace Mechxel.Renderer
 		
 		public int2 renderSize;
 		
-		#region Depth Buffer
-		
-		public const string DepthBuffer_Name = "DepthBuffer";
-		public static readonly int DepthBuffer_ID = Shader.PropertyToID(DepthBuffer_Name);
-		public static readonly RenderTargetIdentifier DepthBuffer_RT = new RenderTargetIdentifier(DepthBuffer_Name);
-		
-		public const DepthFormat DepthBufferFormat = DepthFormat.Bits32;
-		
-		internal static RenderTextureDescriptor DepthDescriptor(in int2 size) =>
-			new RenderTextureDescriptor(size.x, size.y)
-			{
-				colorFormat = RenderTextureFormat.Depth,
-				depthBufferBits = DepthBufferFormat.Bits(),
-				
-				enableRandomWrite = false,
-				msaaSamples = 1
-			};
-		
-		#endregion
+		public static readonly GBuffer DepthBuffer = new GBuffer
+		(
+			"DepthBuffer",
+			GraphicsFormat.None, DepthFormat.Bits32
+		);
 		
 		public static CommandBuffer buffer { get; private set; } = new CommandBuffer()
 		{
