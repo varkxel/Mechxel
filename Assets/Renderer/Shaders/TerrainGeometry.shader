@@ -71,14 +71,10 @@ Shader "Mechxel/Terrain"
 			{
 				GBuffers buffers;
 				
-				//uint id = SAMPLE_TEXTURE2D(_ID, sampler_ID, info.uv).x;
-				uint id = 2048;
+				float id = SAMPLE_TEXTURE2D(_ID, sampler_ID, info.uv).x;
 				half3 normal = info.normal_WS;
 				
-				// Cast uint to float
-				float idFloat = id;
-				
-				buffers.GBuffer0 = half4(idFloat, normal);
+				buffers.GBuffer0 = half4(id, normal);
 				
 				return buffers;
 			}

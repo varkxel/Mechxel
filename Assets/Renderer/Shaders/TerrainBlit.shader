@@ -42,7 +42,7 @@ Shader "Hidden/Mechxel/TerrainBlit"
 			half4 Fragment(FragmentInfo info) : SV_Target
 			{
 				float4 gbuffer0 = SAMPLE_TEXTURE2D(GBuffer0, sampler_GBuffer0, info.uv);
-				return gbuffer0.x == 2048.0;
+				return gbuffer0.yzwx;
 			}
 			
 			ENDHLSL
