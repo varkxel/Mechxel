@@ -8,10 +8,8 @@ namespace Mechxel.Renderer
 	{
 		private const string Name = "Mechxel Renderer";
 		
-		[Header("Draw Call Management")]
-		public bool useSRPBatcher = true;
-		public bool useInstancing = false;
-		public bool useDynamicBatching = false;
+		[Header("Voxel Materials")]
+		public VoxelMaterialAsset[] voxelMaterials;
 		
 		protected override RenderPipeline CreatePipeline()
 		{

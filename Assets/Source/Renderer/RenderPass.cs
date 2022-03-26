@@ -13,7 +13,7 @@ namespace Mechxel.Renderer
 			LightingPassTag = new ShaderTagId(LightingPassTag_Name);
 		}
 		
-		public abstract void Initialise();
+		public abstract void Initialise(ref Context context);
 		public abstract void Render(ref Context context);
 	}
 }

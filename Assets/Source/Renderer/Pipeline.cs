@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
@@ -7,32 +6,32 @@ using static Unity.Mathematics.math;
 using Mechxel.Renderer.Development;
 using static Mechxel.Renderer.Context;
 
+using System.Collections.Generic;
+
 namespace Mechxel.Renderer
 {
 	public class Pipeline : RenderPipeline
 	{
-		public PipelineSettings settings;
+		public Context context = new Context();
 		
-		internal Context context;
-		
-		protected List<RenderPass> renderPasses = new List<RenderPass>(new RenderPass[]
+		public List<RenderPass> renderPasses = new List<RenderPass>(new RenderPass[]
 		{
 			new TerrainRenderer()
 		});
 		
 		public Pipeline(PipelineSettings settings)
 		{
-			this.settings = settings;
+			context.settings = settings;
 			
 			UnsupportedShaderRenderer.Initialise();
-			for(int i = 0; i < renderPasses.Count; i++) renderPasses[i].Initialise();
+			for(int i = 0; i < renderPasses.Count; i++) renderPasses[i].Initialise(ref context);
 		}
 		
 		protected override void Render(ScriptableRenderContext _SRPContext, Camera[] cameras)
 		{
 			Profiler.BeginSample("Mechxel Render Pipeline");
 			
-			context = new Context { SRPContext = _SRPContext };
+			context.SRPContext = _SRPContext;
 			
 			// Render each camera
 			for(int cameraIndex = 0; cameraIndex < cameras.Length; cameraIndex++)

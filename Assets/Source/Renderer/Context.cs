@@ -8,6 +8,8 @@ namespace Mechxel.Renderer
 {
 	public struct Context
 	{
+		public PipelineSettings settings;
+		
 		public ScriptableRenderContext SRPContext;
 		public Camera camera;
 		

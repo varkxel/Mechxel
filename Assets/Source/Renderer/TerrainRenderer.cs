@@ -9,12 +9,14 @@ namespace Mechxel.Renderer
 	{
 		public TerrainRenderer() : base("MechxelTerrain") {}
 		
-		public static readonly GBuffer GBuffer0 = new GBuffer("GBuffer0", GraphicsFormat.R16G16B16A16_SFloat);
-		
 		private static Material BlitMaterial;
 		private const string BlitShader = "Hidden/Mechxel/TerrainBlit";
 		
 		private static bool BlitMaterial_Initialised = false;
+		
+		public static readonly int VoxelMaterialsProperty = Shader.PropertyToID("voxelMaterials");
+		
+		public static readonly GBuffer GBuffer0 = new GBuffer("GBuffer0", GraphicsFormat.R16G16B16A16_SFloat);
 		
 		private static void BlitMaterial_Initialise()
 		{
@@ -31,8 +33,24 @@ namespace Mechxel.Renderer
 			BlitMaterial = new Material(blitShader);
 		}
 		
-		public override void Initialise()
+		public override void Initialise(ref Context context)
 		{
+			VoxelMaterialAsset[] materialAssets = context.settings.voxelMaterials;
+			int materialCount = materialAssets.Length;
+			
+			VoxelMaterial[] materials = new VoxelMaterial[materialCount];
+			for(int i = 0; i < materialCount; i++)
+			{
+				materials[i] = materialAssets[i].Material;
+			}
+			
+			GraphicsBuffer materialBuffer = new GraphicsBuffer
+			(
+				GraphicsBuffer.Target.Structured,
+				materialCount, VoxelMaterial.Size
+			);
+			Shader.SetGlobalBuffer(VoxelMaterialsProperty, materialBuffer);
+			
 			if(!BlitMaterial_Initialised)
 			{
 				BlitMaterial_Initialise();
