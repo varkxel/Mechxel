@@ -8,7 +8,6 @@ namespace Mechxel.Renderer
 	{
 		private const string Name = "Mechxel Renderer";
 		
-		[Header("Voxel Materials")]
 		public VoxelMaterialAsset[] voxelMaterials;
 		
 		protected override RenderPipeline CreatePipeline()

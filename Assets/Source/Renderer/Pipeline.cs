@@ -81,5 +81,12 @@ namespace Mechxel.Renderer
 			
 			Profiler.EndSample();
 		}
+		
+		protected override void Dispose(bool disposing)
+		{
+			if(!disposing) return;
+			
+			for(int i = 0; i < renderPasses.Count; i++) renderPasses[i].Dispose(ref context);
+		}
 	}
 }

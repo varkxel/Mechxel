@@ -15,5 +15,6 @@ namespace Mechxel.Renderer
 		
 		public abstract void Initialise(ref Context context);
 		public abstract void Render(ref Context context);
+		public abstract void Dispose(ref Context context);
 	}
 }
