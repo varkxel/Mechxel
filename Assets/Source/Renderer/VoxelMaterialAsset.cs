@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 using static Unity.Mathematics.math;
 
 namespace Mechxel.Renderer
@@ -24,5 +25,20 @@ namespace Mechxel.Renderer
 			roughness = this.roughness,
 			metallic = this.metallic
 		};
+		
+		#if UNITY_EDITOR && false
+		private void OnValidate()
+		{
+			PipelineSettings pipelineAsset = GraphicsSettings.defaultRenderPipeline as PipelineSettings;
+			if(pipelineAsset == null) return;
+			if(pipelineAsset.pipeline == null) return;
+			
+			foreach(RenderPass renderPass in pipelineAsset.pipeline.renderPasses)
+			{
+				if(renderPass is not TerrainRenderer terrainRenderer) continue;
+				terrainRenderer.RefreshMaterials(pipelineAsset.voxelMaterials);
+			}
+		}
+		#endif
 	}
 }

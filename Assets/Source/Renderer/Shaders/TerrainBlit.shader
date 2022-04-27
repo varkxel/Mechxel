@@ -15,6 +15,7 @@ Shader "Hidden/Mechxel/TerrainBlit"
 			#pragma fragment Fragment
 			
 			#include "Common.hlsl"
+			#include "VoxelMaterial.hlsl"
 			
 			struct VertexInfo
 			{
@@ -41,8 +42,10 @@ Shader "Hidden/Mechxel/TerrainBlit"
 			
 			half4 Fragment(FragmentInfo info) : SV_Target
 			{
-				float4 gbuffer0 = SAMPLE_TEXTURE2D(GBuffer0, sampler_GBuffer0, info.uv);
-				return abs(gbuffer0.yzwx);
+				int i = (info.uv.x * 128) % 2;
+				return half4(voxelMaterials[i].colourB, 1);
+				//float4 gbuffer0 = SAMPLE_TEXTURE2D(GBuffer0, sampler_GBuffer0, info.uv);
+				//return abs(gbuffer0.yzwx);
 			}
 			
 			ENDHLSL

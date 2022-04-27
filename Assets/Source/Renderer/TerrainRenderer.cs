@@ -15,7 +15,7 @@ namespace Mechxel.Renderer
 		private static bool BlitMaterial_Initialised = false;
 		
 		public static readonly int materialsProperty = Shader.PropertyToID("voxelMaterials");
-		private GraphicsBuffer materialsBuffer;
+		private ComputeBuffer materialsBuffer = null;
 		
 		public static readonly GBuffer GBuffer0 = new GBuffer("GBuffer0", GraphicsFormat.R16G16B16A16_SFloat);
 		
@@ -36,6 +36,12 @@ namespace Mechxel.Renderer
 		
 		public override void Initialise(ref Context context)
 		{
+			if(!BlitMaterial_Initialised)
+			{
+				BlitMaterial_Initialise();
+				BlitMaterial_Initialised = true;
+			}
+			
 			VoxelMaterialAsset[] materialAssets = context.settings.voxelMaterials;
 			int materialCount = materialAssets.Length;
 			
@@ -45,18 +51,12 @@ namespace Mechxel.Renderer
 				materials[i] = materialAssets[i].Material;
 			}
 			
-			materialsBuffer = new GraphicsBuffer
+			materialsBuffer = new ComputeBuffer
 			(
-				GraphicsBuffer.Target.Structured,
-				materialCount, VoxelMaterial.Size
+				materialCount, VoxelMaterial.Size,
+				ComputeBufferType.Structured, ComputeBufferMode.Immutable
 			);
 			Shader.SetGlobalBuffer(materialsProperty, materialsBuffer);
-			
-			if(!BlitMaterial_Initialised)
-			{
-				BlitMaterial_Initialise();
-				BlitMaterial_Initialised = true;
-			}
 		}
 		
 		public override void Render(ref Context context)
@@ -115,6 +115,7 @@ namespace Mechxel.Renderer
 		public override void Dispose(ref Context context)
 		{
 			materialsBuffer.Dispose();
+			materialsBuffer = null;
 		}
 	}
 }
